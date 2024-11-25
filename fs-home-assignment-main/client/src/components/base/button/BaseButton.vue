@@ -44,6 +44,11 @@ export default {
           bg: '#008080',
           hover: '#006666',
           color: '#fff'
+        },
+        [THEMES.RTEAL]: {
+            bg: 'transperent',
+            hover: '#165252',
+            color: '#008080',
         }
       }
       const type = this.theme.toUpperCase() || THEMES.PRIMARY
@@ -55,29 +60,32 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/utilities/css/vars/vars.scss';
-button {
-  background-color: v-bind('themeObj.bg');
-  color: $WHITE;
-  font-size: large;
-  font-family: $FONT_BOLD;
-  border: none;
-  border-radius: 5px;
-  padding: 10px 20px;
-  cursor: pointer;
+    button {
+        background-color: v-bind('themeObj.bg');
+        color: v-bind('themeObj.color');
+        border: solid 1px v-bind('themeObj.color');
+        font-size: large;
+        font-family: $FONT_BOLD;
+        border-radius: 5px;
+        padding: 10px 20px;
+        cursor: pointer;
 
-  &.fullWidth {
-    width: 100%;
-  }
-  &:hover {
-    background-color: v-bind('themeObj.hover');
-  }
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    &:hover,
-    &:active {
-      background: v-bind('themeObj.bg');
+        &.fullWidth {
+            width: 100%;
+        }
+
+        &:hover {
+            background-color: v-bind('themeObj.hover');
+        }
+
+        &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+
+            &:hover,
+            &:active {
+                background: v-bind('themeObj.bg');
+            }
+        }
     }
-  }
-}
 </style>

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\Auth\TokenController;
+use App\Http\Controllers\Auth\RegisterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,4 +17,5 @@ use App\Http\Controllers\Auth\TokenController;
 |
 */
 
+Route::post('signup', [RegisterController::class, 'signup']);
 Route::post('login', [TokenController::class, 'login']);

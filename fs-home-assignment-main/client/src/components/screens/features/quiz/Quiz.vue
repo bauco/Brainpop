@@ -1,15 +1,18 @@
 <template>
   <div class="quiz_container">
-    <div v-if="data">
-      <QuizStartScreen v-if="quizState === QUIZ_STATES.START" :name="data.name" :questionsLength="data.questions.length" @start="start"></QuizStartScreen>
-      <QuizQuestionsScreen v-if="quizState === QUIZ_STATES.QUESTIONS"></QuizQuestionsScreen>
-    </div>
+      <div v-if="data">
+          <QuizStartScreen v-if="quizState === QUIZ_STATES.START" :name="data.name" :questionsLength="data.questions.length" @start="start"></QuizStartScreen>
+          <QuizQuestionsScreen v-if="quizState === QUIZ_STATES.QUESTIONS"></QuizQuestionsScreen>
+          <ResultsScreen v-if="quizState === QUIZ_STATES.RESULT"></ResultsScreen>
+
+      </div>
     <div v-else>Loading...</div>
   </div>
 </template>
 
 <script>
 import QuizStartScreen from './startScreen/QuizStartScreen.vue'
+import ResultsScreen from './resultsScreen/ResultsScreen.vue'
 import QuizQuestionsScreen from './questionsScreen/QuizQuestionsScreen.vue'
 
 const QUIZ_STATES = {

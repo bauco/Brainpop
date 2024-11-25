@@ -1,4 +1,5 @@
 export const THEMES = {
   PRIMARY: 'PRIMARY',
-  SECONDARY: 'SECONDARY'
+    SECONDARY: 'SECONDARY',
+    RTEAL:'RTEAL'
 }

@@ -1,8 +1,10 @@
 <template>
-  <form class="login_form" @submit.prevent="submit">
-    <BaseInput v-model="userName" label="Username" />
+  <form class="signup_form" @submit.prevent="submit">
+    <BaseInput v-model="name" label="Name" />
+    <BaseInput v-model="email" label="Email" />
     <BaseInput v-model="password" label="Password" type="password" />
-    <BaseButton type="submit" fullWidth>Log in</BaseButton>
+    <BaseInput v-model="password_confirmation"  type="password" label="Password Confirmation" />
+    <BaseButton type="submit" fullWidth>Sign Up</BaseButton>
   </form>
 </template>
 
@@ -12,7 +14,7 @@ import BaseInput from '@/components/base/input/BaseInput.vue'
 import BaseButton from '@/components/base/button/BaseButton.vue'
 
 export default {
-  name: 'LoginForm',
+  name: 'SignupForm',
   emits: ['submit'],
   components: {
     BaseInput,
@@ -20,19 +22,25 @@ export default {
   },
   data() {
     return {
+        name:'',
         email: '',
-      password: ''
+        password: '',
+        password_confirmation: ''
     }
   },
   methods: {
     submit() {
       console.log('submit', {
-        email: this.userName,
-        password: this.password
+        name: this.name,
+        email: this.email,
+        password: this.password,
+        password_confirmation: this.password_confirmation,
       })
       this.$emit('submit', {
-          email: this.userName,
-        password: this.password
+        name: this.name,
+        email: this.email,
+        password: this.password,
+        //password_confirmation: this.password_confirmation,
       })
     }
   }
@@ -41,7 +49,7 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/utilities/css/vars/vars.scss';
-.login_form {
+.signup_form {
   width: 60%;
   display: flex;
   flex-direction: column;
