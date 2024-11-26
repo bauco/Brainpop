@@ -6,6 +6,9 @@
       ]" />
         <main class="start-content">
             <div class="results-screen">
+                <div class="pad">
+
+                </div>
                 <div class="result-summary">
                     <h2>
                         Scored {{score}} / {{totalQuestions}}
@@ -22,8 +25,7 @@
                                       :multipleChoice="question.multipleChoice"
                                       v-model="answers[index]"
                                       :submitted="true"
-                                      :isCorrect="results[index]"
-                        />
+                                      :isCorrect="results[index]" />
                     </div>
                     <hr />
                 </div>
@@ -83,6 +85,13 @@
     }
 </script>
 <style scoped>
+    .pad {
+        width: 100%;
+        height: 40px;
+        background: #f3f3f3;
+        border: solid 0.01rem #c0bdbd;
+        box-shadow: 0 1px 2px 0 rgba(255, 255, 255, 0.15);
+    }
     .results-screen {
         margin-block: 60px auto;
     }
