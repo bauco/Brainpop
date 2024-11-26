@@ -19,6 +19,7 @@ class RegisterController extends Controller
             'email' => $request->input('email'),
             'password' => Hash::make($request->input('password')),
         ]);
+        error_log("user");
         Auth::login($user);
         $token = $user->createToken('auth_token')->plainTextToken;
 
