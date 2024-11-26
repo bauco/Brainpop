@@ -13,37 +13,11 @@ class QuizController extends Controller
 {
     public function questions(GetQuestionsRequest $request)
     {
-        error_log( "ddsf");
-
         //$quizId = $request->input('quizId');
 
-    $questions = [
-    [
-        'text' => 'What is 2 + 2?',
-        'type' => 'text',
-        'options' => [],
-    ],
-    [
-        'text' => 'What is the capital of France?',
-        'type' => 'text',
-        'options' => [],
-    ],
-    [
-        'text' => 'Which of the following are programming languages?',
-        'type' => 'multiple',
-        'options' => ['JavaScript', 'HTML', 'CSS', 'Python', 'Excel'],
-    ],
-    [
-        'text' => 'Who wrote "Hamlet"?',
-        'type' => 'textarea',
-        'options' => [],
-    ],
-    [
-        'text' => 'What is the tallest mountain in the world?',
-        'type' => 'text',
-        'options' => [],
-    ]
-];
+        $questions = Question::all();
+
+        // should replace with quiz id query
         return response()->json([
             'message' => 'Quiz submitted successfully',
             'questions' => $questions,
@@ -52,7 +26,6 @@ class QuizController extends Controller
 
     public function submit(ValidateRequest $request)
     {
-        error_log("124");
         $validated = $request->validated();
         $results = $this->checkQuestions( $request->input('answers'),$request->input('questions'));
         $score = count(array_filter($results, fn($result) => $result));

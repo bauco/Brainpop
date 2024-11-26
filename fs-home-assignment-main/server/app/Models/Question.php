@@ -15,7 +15,8 @@ class Question extends Model
         'multipleChoice',
         'correct_answer'
     ];
-
+    protected $table = 'questions';
+    protected $primaryKey = 'id';
     public function quiz()
     {
         return $this->belongsTo(Quiz::class);
