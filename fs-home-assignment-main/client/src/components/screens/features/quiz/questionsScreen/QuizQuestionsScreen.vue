@@ -20,7 +20,7 @@
                                 :totalQuestions="questions.length"
                                 :nextQuestion="nextQuestion"
                                 :prevQuestion="prevQuestion"
-                                :submitAnswers="submitAnswers" />
+                                :submit="submit" />
             </div>
         </main>
     </div>
@@ -50,9 +50,9 @@
                     this.currentQuestionIndex--;
                 }
             },
-            submitAnswers() {
+            submit() {
                 // Handle submission logic
-                this.$emit('submit-answers', this.answers);
+                this.$emit('submit', this.answers);
                 console.log('Answers submitted:', this.answers);
                 alert('Quiz submitted! Check console for answers.');
             }

@@ -46,6 +46,10 @@ export default {
             if (!response.data || response.data.message !== "User signup successfully") {
                 this.errorMessage = 'Signup failed';
             } else {
+                axios.interceptors.request.use(function (config) {
+                    config.headers.Authorization = response.data.access_token;
+                    return config;
+                });
                 const store = useUserStore();
                 store.login(response.data.access_token);
                 this.$router.push('/feature/quiz');

@@ -3,7 +3,7 @@
         <div class="navigation-buttons">
             <BaseButton @click="prevQuestion" v-if="currentQuestionIndex > 0 && currentQuestionIndex <= totalQuestions - 1" type="submit" :theme="'RTEAL'">Back</BaseButton>
             <BaseButton @click="nextQuestion" v-if="currentQuestionIndex < totalQuestions - 1" type="submit" :theme="'SECONDARY'">Next</BaseButton>
-            <BaseButton @click="submitAnswers" v-if="currentQuestionIndex === totalQuestions - 1" type="submit" :theme="'SECONDARY'">Submit</BaseButton>
+            <BaseButton @click="submit" v-if="currentQuestionIndex === totalQuestions - 1" type="submit" :theme="'SECONDARY'">Submit</BaseButton>
         </div>
     </div>
 </template>
@@ -13,7 +13,7 @@
 
     export default {
         name: 'QuizNavigator',
-        components: {BaseButton},
+        components: { BaseButton },
         props: {
             currentQuestionIndex: {
                 type: Number,
@@ -31,7 +31,7 @@
                 type: Function,
                 required: true
             },
-            submitAnswers: {
+            submit: {
                 type: Function,
                 required: true
             }

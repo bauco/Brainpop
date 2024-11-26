@@ -15,7 +15,7 @@
     import Logo from '@/components/base/logo/Logo.vue'
     import LoginForm from '@/components/compositions/forms/login/LoginForm.vue'
     import axios from 'axios'
-
+    import { useUserStore } from '@/stores/user'
 
     export default {
 
@@ -42,12 +42,12 @@
                 console.log('Login:', apiUrl + '/api/login');
                 try {
                     const response = await axios.post('/api/login', credentials)
-                    if (!response.ok) throw new Error('Login failed');
-
-                    const data = await response.json();
-                    console.log('Login successful:', data);
                     const store = useUserStore();
-                    store.login(data.token);
+                    store.login(response.data.access_token);
+                    axios.interceptors.request.use(function (config) {
+                        config.headers.Authorization = response.data.access_token;
+                        return config;
+                    });
                     this.$emit('submit', credentials)
                     this.$router.push('/feature/quiz');
 
