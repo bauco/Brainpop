@@ -47,7 +47,7 @@
                     const data = await response.json();
                     console.log('Login successful:', data);
                     const store = useUserStore();
-                    store.setUser(data);
+                    store.login(data.token);
                     this.$emit('submit', credentials)
                     this.$router.push('/feature/quiz');
 

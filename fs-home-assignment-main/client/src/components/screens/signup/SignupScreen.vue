@@ -5,7 +5,6 @@
         <br />
         <BaseButton @click="login" type="submit" :theme="'SECONDARY'">Login</BaseButton>
         <p v-if="errorMessage" class="error_message">{{ errorMessage }}</p>
-
     </main>
 </template>
 
@@ -34,7 +33,7 @@ export default {
         errorMessage: '', // Error message to display on the screen
     };
     
-},
+    },
     methods: {
         login() {
         this.$router.push('login');
@@ -42,22 +41,26 @@ export default {
     async submit(credentials) {
         const apiUrl = import.meta.env.VITE_API_URL;
         axios.defaults.baseURL = apiUrl;
-        console.log('Signup:', apiUrl + '/api/signup');
         try {
             const response = await axios.post('/api/signup', credentials);
-            if (response.data.message !== "User signup successfully") throw new Error('Signup failed');
-            this.$emit('submit', credentials)
+            if (!response.data || response.data.message !== "User signup successfully") {
+                this.errorMessage = 'Signup failed';
+            } else {
+                const store = useUserStore();
+                store.login(response.data.access_token);
+                this.$router.push('/feature/quiz');
+            }
         } catch (error) {
-         if (error.response) {
-             this.errorMessage = error.response.data.message || 'An error occurred while logging in.';
-         } else if (error.request) {
-             this.errorMessage = 'No response from the server. Please try again later.';
-         } else {
-             this.errorMessage = error.message;
+            if (error.response) {
+                this.errorMessage = error.response.data.message || 'An error occurred while logging in.';
+             } else if (error.request) {
+                 this.errorMessage = 'No response from the server. Please try again later.';
+             } else {
+                 this.errorMessage = error.message;
+             }
          }
-     }
     }
-}
+    }
 }
 </script>
 

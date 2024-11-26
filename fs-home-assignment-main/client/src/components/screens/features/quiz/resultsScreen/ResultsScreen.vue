@@ -1,17 +1,25 @@
 <template>
-    <div class="results-screen">
-        <h2>Quiz Results</h2>
-        <div v-for="(question, index) in questions" :key="index" class="result-item">
-            <BaseQuestion :key="index"
-                          :index="index + 1"
-                          :question="question.question"
-                          :type="question.type"
-                          :options="question.options"
-                          :subQuestions="question.subQuestions"
-                          :multipleChoice="question.multipleChoice"
-                          v-model="answers[index]"
-                          :totalQuestions="questions.length" />
-        </div>
+    <div class="start_container">
+        <Navigator :items="[
+        { text: name, to: `/feature/quiz` },
+        { text: 'Quiz', to: '' }
+      ]" />
+        <main class="start_content">
+            <div class="quiz-container">
+                <h2>Quiz Results</h2>
+                <div v-for="(question, index) in questions" :key="index" class="result-item">
+                    <BaseQuestion :key="index"
+                                  :index="index + 1"
+                                  :question="question.question"
+                                  :type="question.type"
+                                  :options="question.options"
+                                  :subQuestions="question.subQuestions"
+                                  :multipleChoice="question.multipleChoice"
+                                  v-model="answers[index]"
+                                  :totalQuestions="questions.length" />
+                </div>
+            </div>
+        </main>
     </div>
 </template>
 

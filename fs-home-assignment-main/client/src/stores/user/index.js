@@ -1,20 +1,28 @@
 import { defineStore } from 'pinia'
+
 export const useUserStore = defineStore('user', {
-  state: () => ({
-    loggedIn: false
-  }),
-  getters: {
-    isLoggedIn: state => {
-      let loggedIn = window.localStorage.getItem('loggedIn')
-      return loggedIn || state.loggedIn
+    state: () => ({
+        loggedIn: false,
+        token: null, // Add token to store
+    }),
+    getters: {
+        isLoggedIn: (state) => {
+            const token = window.localStorage.getItem('token');
+            return token || state.loggedIn;
+        }
+    },
+    actions: {
+        login(token) {
+            window.localStorage.setItem('loggedIn', 'true');
+            window.localStorage.setItem('token', token);
+            this.token = token;
+            this.loggedIn = true;
+        },
+        logout() {
+            this.loggedIn = false;
+            this.token = null;
+            window.localStorage.removeItem('loggedIn');
+            window.localStorage.removeItem('token');
+        }
     }
-  },
-  actions: {
-    login(callback) {
-      this.loggedIn = true
-      window.localStorage.setItem('loggedIn', 'true')
-      // ACTIVATE CALLBACK WITH THE LOGIN STATUS
-      callback(true)
-    }
-  }
-})
+});
