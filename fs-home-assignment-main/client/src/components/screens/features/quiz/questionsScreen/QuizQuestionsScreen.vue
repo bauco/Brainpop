@@ -20,7 +20,7 @@
                                 :totalQuestions="questions.length"
                                 :nextQuestion="nextQuestion"
                                 :prevQuestion="prevQuestion"
-                                :submit="submit" />
+                                :submitAnswers="submitAnswers" />
             </div>
         </main>
     </div>
@@ -39,7 +39,6 @@
             Navigator,
             QuizNavigator
         },
-        emits: ['submit'],
         methods: {
             nextQuestion() {
                 if (this.currentQuestionIndex < this.questions.length - 1) {
@@ -51,10 +50,11 @@
                     this.currentQuestionIndex--;
                 }
             },
-            submit() {
+            submitAnswers() {
                 // Handle submission logic
+                this.$emit('submit-answers', this.answers);
                 console.log('Answers submitted:', this.answers);
-                this.$emit('submit', this.answers);
+                alert('Quiz submitted! Check console for answers.');
             }
         },
         data() {

@@ -40,7 +40,7 @@
         </div>
 
         <!-- Subquestions -->
-        <div v-if="type === 'section' || subQuestions" class="subquestions_container">
+        <div v-if="type === 'section'" class="subquestions_container">
             <div v-for="(sub, subIndex) in subQuestions" :key="subIndex">
                 <BaseQuestion :index="index + '.' + (subIndex + 1)"
                               :question="sub.question"
@@ -48,8 +48,17 @@
                               :options="sub.options"
                               :multipleChoice="sub.multipleChoice"
                               v-model="localSubAnswers[subIndex]"
-                              :totalQuestions="totalQuestions"/>
+                              :totalQuestions="totalQuestions"
+                              :isReadOnly="isReadOnly" />
             </div>
+        </div>
+        <div v-if="isReadOnly && (type === 'multiple' || type === 'text')" class="answer-display">
+            <p class="answer">{{ localAnswer }}</p>
+            <svg v-if="submitted" :class="{'correct': isCorrect(localAnswer), 'wrong': !isCorrect(localAnswer)}">
+                <!-- Correct/Incorrect Icon SVG -->
+                <circle v-if="isCorrect(localAnswer)" cx="50" cy="50" r="45" class="checkmark" />
+                <circle v-if="!isCorrect(localAnswer)" cx="50" cy="50" r="45" class="cross" />
+            </svg>
         </div>
     </div>
 </template>

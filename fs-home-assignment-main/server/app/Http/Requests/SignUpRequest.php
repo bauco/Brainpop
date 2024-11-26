@@ -5,7 +5,6 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Validation\Rule;
 
 class SignUpRequest extends FormRequest
 {
@@ -18,7 +17,7 @@ class SignUpRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'email' => ['required|string|email',, Rule::unique('users', 'email')]
+            'email' => 'required|string|email',
             'password' => 'required|string',
         ];
     }
@@ -33,9 +32,6 @@ class SignUpRequest extends FormRequest
      */
     protected function failedValidation(Validator $validator)
     {
-        if ($errors->has('email')) {
-            $errors->add('email', 'This email is already registered. Please choose a different one.');
-        }
         $errors = $validator->errors();
 
         throw new HttpResponseException(response()->json([
