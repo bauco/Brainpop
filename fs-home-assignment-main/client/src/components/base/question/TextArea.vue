@@ -4,18 +4,29 @@
                :placeholder="placeholder || 'Your answer here'"
                type="textarea"
                class="question-field"
-               @input="updateAnswer" />
+               @input="updateAnswer"
+               :disabled="submitted" />
+        <AnswerFeedback v-if="submitted" :isCorrect="isCorrect" />
+
     </div>
 </template>
 
 <script>
+    import AnswerFeedback from '@/components/base/question/AnswerFeedback.vue';
+
     import { ref, watch } from 'vue';
 
     export default {
         name: 'TextArea',
+        components: { AnswerFeedback },
+
         props: {
+
             modelValue: { type: String, required: false },
-            placeholder: { type: String, required: false }
+            placeholder: { type: String, required: false },
+            submitted: { type: Boolean, required: false, default: false },
+            isCorrect: { type: Boolean, required: false },
+
         },
         emits: ['update:modelValue'],
         setup(props, { emit }) {

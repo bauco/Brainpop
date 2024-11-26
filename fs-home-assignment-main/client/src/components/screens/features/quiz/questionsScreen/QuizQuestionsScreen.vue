@@ -1,7 +1,7 @@
 <template>
     <div class="start_container">
         <Navigator :items="[
-        { text: name, to: `/feature/quiz` },
+        { text: name, to: `/feature/quiz`, topic: true },
         { text: 'Quiz', to: '' }
       ]" />
         <main class="start_content">
@@ -15,7 +15,7 @@
                               :subQuestions="questions[currentQuestionIndex].subQuestions"
                               :multipleChoice="questions[currentQuestionIndex].multipleChoice"
                               v-model="answers[currentQuestionIndex]"
-                              :totalQuestions="questions.length" />
+                              :submitted ="false"/>
                 <QuizNavigator :currentQuestionIndex="currentQuestionIndex"
                                 :totalQuestions="questions.length"
                                 :nextQuestion="nextQuestion"
@@ -57,10 +57,7 @@
                 }
             },
             submit() {
-                // Handle submission logic
                 this.$emit('submit', this.answers);
-                console.log('Answers submitted:', this.answers);
-                alert('Quiz submitted! Check console for answers.');
             }
         },
         data() {

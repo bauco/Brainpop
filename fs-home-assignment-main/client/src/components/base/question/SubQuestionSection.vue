@@ -7,18 +7,21 @@
                       :type="sub.type"
                       :options="sub.options"
                       :multipleChoice="sub.multipleChoice"
-                      v-model="localSubAnswers[subIndex]" />
+                      v-model="localSubAnswers[subIndex]"
+                      :submitted="submitted" />
     </div>
 </template>
 
 <script>
+
     import BaseQuestion from './BaseQuestion.vue';
     import { ref, watch } from 'vue';
     export default {
         name: 'SubQuestionSection',
         props: {
             subQuestions: { type: Array, required: true },
-            index: { type: String, required: true }
+            index: { type: String, required: true },
+            submitted: { type: Boolean, required: false, default: false },
         },
         setup(props) {
             const localSubAnswers = ref(props.subQuestions.map(() => ''));

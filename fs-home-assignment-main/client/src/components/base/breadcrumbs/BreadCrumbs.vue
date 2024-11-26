@@ -1,19 +1,20 @@
 <template>
   <ol class="breadcrumbs">
-    <li class="link" v-for="(item, index) in items" :key="index">
-      <span class="text"> / </span>
-      <router-link v-if="item.to" class="link" :to="item.to">{{ item.text }}</router-link>
-      <span v-else class="text">{{ item.text }}</span>
-    </li>
+      <li class="link" v-for="(item, index) in items" :key="index">
+          <span class="text"> / </span>
+          <Topic v-if="item.topic" color="white" width="30px"></Topic>
+          <router-link v-if="item.to" class="link" :to="item.to">{{ item.text }}</router-link>
+          <span v-else class="text">{{ item.text }}</span>
+      </li>
   </ol>
 </template>
 
 <script>
-import Logo from '@/components/base/logo/Logo.vue'
+    import Topic from '@/components/base/logo/Topic.vue'
 export default {
   name: 'Breadcrumbs',
   components: {
-    Logo
+      Topic
   },
   props: {
     items: {
@@ -39,17 +40,18 @@ export default {
   gap: 0.5rem;
   font-size: 18px;
 }
-.link {
-  font-family: $FONT-BOLD;
-  text-decoration: none;
-  white-space: nowrap;
-  color: v-bind(color);
-  padding-inline-start: 3px;
-}
+    .link {
+        display: contents;
+        font-family: $FONT-BOLD;
+        text-decoration: none;
+        white-space: nowrap;
+        color: v-bind(color);
+        padding-inline-start: 3px;
+    }
 .text {
-  font-family: $FONT-REGULAR;
-  text-decoration: none;
-  white-space: nowrap;
-  color: v-bind(color);
+    font-family: $FONT-BOLD;
+    text-decoration: none;
+    white-space: nowrap;
+    color: v-bind(color);
 }
 </style>

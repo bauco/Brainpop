@@ -1,10 +1,9 @@
 <template>
     <div class="input-container">
         <div v-for="(option, idx) in options"
-             :key="idx" :class="['multi-option', { checked: isChecked(option) }]"
+             :key="idx" :class="['multi-option', { checked: isChecked(option) } , { true: isTrue(option) } , { false: isFalse(option) }]"
              @click="selectOption(option)">
-            <svg 
-                 class="circle-svg"
+            <svg class="circle-svg"
                  :class="{ selected: isChecked(option) }"
                  xmlns="http://www.w3.org/2000/svg"
                  viewBox="0 0 100 100">
@@ -12,18 +11,25 @@
                 <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" class="circle-text">{{ String.fromCharCode(97 + idx).toUpperCase() }}</text>
             </svg>
             <p>{{ option }}</p>
+            <AnswerFeedback v-if="submitted && localAnswer === option" :isCorrect="isCorrect" />
         </div>
+
     </div>
 </template>
 
 <script>
+    import AnswerFeedback from '@/components/base/question/AnswerFeedback.vue';
+
     import { ref, watch } from 'vue';
     export default {
+        components: { AnswerFeedback },
         name:'MultipleChoiceQuestion',
         props: {
             modelValue: { type: [String, Array], required: false },
             options: { type: Array, required: true },
             multipleChoice: { type: Boolean, required: false, default: false },
+            submitted: { type: Boolean, required: false, default: false },
+            isCorrect: { type: Boolean, required: false },
         },
         emits: ['update:modelValue'],
         setup(props, { emit }) {
@@ -36,8 +42,26 @@
             const isChecked = (option) => {
                 return props.multipleChoice ? localAnswer.value.includes(option) : localAnswer.value === option;
             };
-
+            const isTrue = (option) => {
+                if (!props.submitted || !isChecked(option)) {
+                    return false;
+                }
+                return props.isCorrect;
+            };
+            const isFalse = (option) => {
+                if (!props.submitted || !isChecked(option)) {
+                    return false;
+                }
+                console.log(option)
+                console.log(props.submitted)
+                console.log(isChecked(option))
+                console.log(props.isCorrect)
+                return !props.isCorrect;
+            };
             const selectOption = (option) => {
+                if (props.submitted) {
+                    return;
+                }
                 if (props.multipleChoice) {
                     const idx = localAnswer.value.indexOf(option);
                     if (idx > -1) {
@@ -51,7 +75,7 @@
                 updateAnswer();
             };
 
-            return { localAnswer, isChecked, selectOption, updateAnswer };
+            return { localAnswer, isChecked,isTrue,isFalse, selectOption, updateAnswer };
         },
     };
 </script>
@@ -79,6 +103,16 @@
 
         &.checked {
             background-color: #f0fcfe;
+        }
+
+        &.true {
+            background-color: #f3fff1;
+            border: solid #589e63 1px;
+        }
+
+        &.false {
+            background-color: #fcf7f7;
+            border: solid #de678b 1px;
         }
     }
 

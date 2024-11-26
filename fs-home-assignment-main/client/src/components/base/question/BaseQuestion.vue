@@ -4,17 +4,19 @@
             <h2>{{ index }}</h2>
             <p>{{ text }}</p>
         </div>
-        <TextQuestion v-if="type === 'text'" v-model="localAnswer" :placeholder="placeholder" />
-        <TextArea v-if="type === 'textarea'" v-model="localAnswer" :placeholder="placeholder" />
+        <TextQuestion v-if="type === 'text'" :submitted="submitted" v-model="localAnswer" :placeholder="placeholder" :isCorrect ="isCorrect"/>
+        <TextArea v-if="type === 'textarea'" :submitted="submitted" v-model="localAnswer" :placeholder="placeholder" :isCorrect ="isCorrect"/>
 
         <MultipleChoiceQuestion v-if="type === 'multiple'"
                                 :options="options"
                                 v-model="localAnswer"
-                                @update:modelValue="updateAnswer" />
-        <SubQuestionSection v-if="type === 'section'"
+                                @update:modelValue="updateAnswer"
+                                :submitted="submitted"
+                                :isCorrect ="isCorrect"
+                                />
+        <SubQuestionSection :submitted="submitted" v-if="type === 'section'"
                             :subQuestions="subQuestions"
                             v-model="localSubAnswers" />
-        <AnswerFeedback v-if="submitted" :answer="localAnswer" :isCorrect="isCorrectAnswer" />
     </div>
 </template>
 
@@ -44,9 +46,9 @@
             subQuestions: { type: Array, required: false },
             multipleChoice: { type: Boolean, required: false, default: false },
             placeholder: { type: String, required: false },
-            totalQuestions: { type: Number, required: true },
             localAnswer: { type: String, required: false },
             submitted: { type: Boolean, required: false, default: false },
+            isCorrect: { type: Boolean, required: false},
         },
         emits: ['update:modelValue'],
         setup(props, { emit }) {
@@ -64,16 +66,11 @@
                 emit('update:modelValue', localAnswer.value);
             };
 
-            const isCorrectAnswer = () => {
-                // Add your logic for correctness here
-                return true; // Mock for simplicity
-            };
 
             return {
                 localAnswer,
                 localSubAnswers,
                 updateAnswer,
-                isCorrectAnswer
             };
         },
     };

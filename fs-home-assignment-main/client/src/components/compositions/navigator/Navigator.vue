@@ -11,7 +11,7 @@ import BreadCrumbs from '@/components/base/breadcrumbs/BreadCrumbs.vue'
 
 export default {
   name: 'Navigator',
-  components: { Logo, BreadCrumbs },
+        components: { Logo, BreadCrumbs },
   props: {
     items: {
       type: Array,

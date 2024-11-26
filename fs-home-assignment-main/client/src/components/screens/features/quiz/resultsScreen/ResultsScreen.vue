@@ -1,37 +1,60 @@
 <template>
-    <div class="start_container">
+    <div class="start-container">
         <Navigator :items="[
-        { text: name, to: `/feature/quiz` },
+        { text: name, to: `/feature/quiz` ,topic: true},
         { text: 'Quiz', to: '' }
       ]" />
-        <main class="start_content">
-            <div class="quiz-container">
-                <h2>Quiz Results</h2>
-                <div v-for="(question, index) in questions" :key="index" class="result-item">
-                    <BaseQuestion :key="index"
-                                  :index="index + 1"
-                                  :question="question.question"
-                                  :type="question.type"
-                                  :options="question.options"
-                                  :subQuestions="question.subQuestions"
-                                  :multipleChoice="question.multipleChoice"
-                                  v-model="answers[index]"
-                                  :totalQuestions="questions.length" />
+        <main class="start-content">
+            <div class="results-screen">
+                <div class="result-summary">
+                    <h2>
+                        Scored {{score}} / {{totalQuestions}}
+                    </h2>
+                </div>
+                <div v-for="(question, index) in questions" :key="index">
+                    <div class="result-item">
+                        <BaseQuestion :key="index"
+                                      :index="index + 1"
+                                      :text="question.text"
+                                      :type="question.type"
+                                      :options="question.options"
+                                      :subQuestions="question.subQuestions"
+                                      :multipleChoice="question.multipleChoice"
+                                      v-model="answers[index]"
+                                      :submitted="true"
+                                      :isCorrect="results[index]"
+                        />
+                    </div>
+                    <hr />
                 </div>
             </div>
         </main>
     </div>
 </template>
-
 <script>
+    import BaseQuestion from '@/components/base/question/BaseQuestion.vue';
+    import Navigator from '@/components/compositions/navigator/Navigator.vue'
     export default {
         name: 'ResultsScreen',
+        components: {
+            Navigator,
+            BaseQuestion,
+        },
+        data() {
+            return {
+                name: 'Accelration',
+            }
+        },
         props: {
             answers: {
                 type: Array,
                 required: true
             },
             questions: {
+                type: Array,
+                required: true
+            },
+            results: {
                 type: Array,
                 required: true
             }
@@ -51,7 +74,6 @@
                 const question = this.questions[index];
                 const correctAnswer = question.correctAnswer;
                 const userAnswer = this.answers[index];
-
                 if (Array.isArray(correctAnswer)) {
                     return correctAnswer.every(ans => userAnswer.includes(ans));
                 }
@@ -60,18 +82,39 @@
         }
     }
 </script>
-
 <style scoped>
     .results-screen {
-        padding: 20px;
+        margin-block: 60px auto;
     }
-
     .result-item {
-        margin-bottom: 10px;
+        margin: 0 25%;
     }
-
+    .result-summary {
+        padding: 10px;
+        width: 100%;
+        display: flex;
+        width: 100%;
+        background: #f0f7f7;
+        justify-content: center;
+    }
     .score {
         font-size: 1.2rem;
         font-weight: bold;
+    }
+    .start-container {
+        width:100%;
+    }
+    .start_content {
+        margin-block: 100px auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        gap: 1.2rem;
+    }
+    .quiz-container {
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px auto;
     }
 </style>
