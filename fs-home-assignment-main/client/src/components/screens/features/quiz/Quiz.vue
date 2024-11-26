@@ -58,6 +58,7 @@ export default {
           try {
               this.answers = answers;
               const response = await axios.post('/api/validate', {
+                  quiz_id: 1,
                   answers: answers,
                   questions: this.questions
               });

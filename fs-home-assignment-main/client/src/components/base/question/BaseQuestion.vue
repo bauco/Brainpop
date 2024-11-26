@@ -7,7 +7,7 @@
         <TextQuestion v-if="type === 'text'" :submitted="submitted" v-model="localAnswer" :placeholder="placeholder" :isCorrect ="isCorrect"/>
         <TextArea v-if="type === 'textarea'" :submitted="submitted" v-model="localAnswer" :placeholder="placeholder" :isCorrect ="isCorrect"/>
 
-        <MultipleChoiceQuestion v-if="type === 'multiple'"
+        <MultipleChoiceQuestion v-if="type === 'multiple-choice'"
                                 :options="options"
                                 v-model="localAnswer"
                                 @update:modelValue="updateAnswer"

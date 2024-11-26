@@ -16,6 +16,7 @@ class GetQuestionsRequest extends FormRequest
     public function rules()
     {
         return [
+            'quiz_id' => 'required|exists:quizzes,id',
         ];
     }
 
@@ -30,7 +31,6 @@ class GetQuestionsRequest extends FormRequest
     protected function failedValidation(Validator $validator)
     {
         $errors = $validator->errors();
-
         throw new HttpResponseException(response()->json([
             'message' => 'Validation failed',
             'errors' => $errors

@@ -1,33 +1,64 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ValidateRequest;
 use App\Http\Requests\GetQuestionsRequest;
-use App\Http\Requests\LoginRequest;
 use App\Models\Quiz;
 use App\Models\Question;
+use App\Models\UserAnswer;
+use App\Models\UserQuiz;
+use Illuminate\Support\Facades\Auth;
 
 class QuizController extends Controller
 {
     public function questions(GetQuestionsRequest $request)
     {
-        //$quizId = $request->input('quizId');
+        // Retrieve quiz ID from query parameter
+        $quizId = (int) $request->query('quiz_id');
+        
+        // Get questions related to the quiz
+        $questions = Question::where('quiz_id', $quizId)
+            ->select('id', 'text', 'type', 'options', 'quiz_id')
+            ->get();
 
-        $questions = Question::all();
-
-        // should replace with quiz id query
         return response()->json([
-            'message' => 'Quiz submitted successfully',
+            'message' => 'Quiz questions retrieved successfully',
             'questions' => $questions,
         ]);
     }
 
     public function submit(ValidateRequest $request)
     {
+        $userId = Auth::id();
         $validated = $request->validated();
-        $results = $this->checkQuestions( $request->input('answers'),$request->input('questions'));
+        try{
+            $userQuiz = UserQuiz::where('user_id', $userId)->exists();
+
+            if ($userQuiz) {
+                return response()->json([
+                    'message' => 'You have already submitted answers for this quiz.',
+                ], 400);
+            }
+            if (!$userQuiz) {
+                $userQuiz = UserQuiz::create([
+                    'user_id' => $userId,
+                    'quiz_id' => $request->input('quiz_id'),
+                    'started_at' => now(),
+                ]);
+            }
+        } catch (\Exception $e) {
+                error_log("Error creating UserAnswer: " . $e->getMessage());
+        }
+
+
+        $results = $this->checkQuestions(
+            $request->input('answers'),
+            $request->input('questions'),
+            $userId,
+            $request->input('quiz_id')
+        );
+        
         $score = count(array_filter($results, fn($result) => $result));
 
         return response()->json([
@@ -36,35 +67,44 @@ class QuizController extends Controller
             'results' => $results,
         ]);
     }
-    private function checkQuestions($answers, $questions)
+
+    private function checkQuestions($answers, $questions, $userId, $quizId)
     {
         $results = [];
         foreach ($questions as $index => $question) {
-            error_log($index);
-            if(is_array($answers[$index])){
-                $this->checkQuestions($question,$answers[$index]);
-            }else{
-                $matchedQuestion = Question::where('text', $question['text'])
-                    ->where('type', $question['type'])
-                    ->first();
-                error_log( $matchedQuestion);
+            // Recursively check nested questions if necessary
+            if (is_array($answers[$index])) {
+                $this->checkQuestions($answers[$index], $question, $userId, $quizId);
+            } else {
+                $matchedQuestion = Question::where('id', $question['id'])->first();
+
                 if (!$matchedQuestion) {
                     return response()->json([
                         'error' => 'Invalid question submitted.',
                         'question' => $question,
                     ], 422);
                 }
-                error_log( $answers[$index]);
                 $isCorrect = $this->validateAnswer($answers[$index], $matchedQuestion);
-                error_log(  $isCorrect);
-                array_push($results,  $isCorrect);
-
+                try {
+                    UserAnswer::create([
+                        'user_id' => $userId,
+                        'user_quiz_id' => $quizId, // Ensure this is passed correctly
+                        'question_id' => $matchedQuestion->id,
+                        'answer' => $answers[$index],
+                        'is_correct' => $isCorrect,
+                    ]);
+                } catch (\Exception $e) {
+                    error_log("Error creating UserAnswer: " . $e->getMessage());
+                }
+                array_push($results, $isCorrect);
             }
         }
         return $results;
     }
+
     private function validateAnswer($submitted, $matched)
     {
-       return strtolower(trim($submitted)) === strtolower(trim($matched->correct_answer));
+        return strtolower(trim($submitted)) === strtolower(trim($matched->correct_answer));
     }
 }
+

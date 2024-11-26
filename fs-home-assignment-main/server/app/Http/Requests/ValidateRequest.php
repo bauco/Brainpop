@@ -17,6 +17,7 @@ class ValidateRequest extends FormRequest
     public function rules()
     {
         return [
+            'quiz_id' => 'required|exists:quizzes,id',
             'answers' => 'required|array',
             'questions' => 'required|array',
         ];

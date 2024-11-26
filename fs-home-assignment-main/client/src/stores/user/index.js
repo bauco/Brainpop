@@ -48,7 +48,7 @@ export const useUserStore = defineStore('user', {
         },
         async getQuestions() {
             try {
-                return await axios.get('/api/questions', { withCredentials: true });
+                return await axios.get('/api/questions?quiz_id=1', { withCredentials: true });
             } catch (error) {
                 console.error('Error in start quiz:', error);
             }
