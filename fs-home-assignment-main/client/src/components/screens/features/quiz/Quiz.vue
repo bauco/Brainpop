@@ -24,8 +24,9 @@ const QUIZ_STATES = {
 export default {
   name: 'Quiz',
   components: {
-    QuizStartScreen,
-    QuizQuestionsScreen
+      QuizStartScreen,
+      QuizQuestionsScreen,
+      ResultsScreen
   },
   props: {
     data: {
