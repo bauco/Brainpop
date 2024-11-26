@@ -9,7 +9,7 @@
                 <!-- Display current question only -->
                 <BaseQuestion :key="currentQuestionIndex"
                               :index="currentQuestionIndex + 1"
-                              :question="questions[currentQuestionIndex].question"
+                              :text="questions[currentQuestionIndex].text"
                               :type="questions[currentQuestionIndex].type"
                               :options="questions[currentQuestionIndex].options"
                               :subQuestions="questions[currentQuestionIndex].subQuestions"

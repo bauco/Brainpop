@@ -1,165 +1,57 @@
 <template>
-    <div class="question_container">
-        <div class="question_header">
-            <h2>{{ index }}</h2>
-            <p>{{ question }}</p>
-        </div>
-
-        <!-- Text question -->
-        <div v-if="type === 'text'" class="input_container">
-            <input v-model="localAnswer"
-                   :placeholder="placeholder || 'Your answer here'"
-                   type="text"
-                   class="question_field"
-                   @input="updateAnswer" />
-        </div>
-
-        <!-- Multiple choice -->
-        <div v-if="type === 'multiple'" class="input_container">
-            <div v-for="(option, idx) in options" @click="selectOption(option)"
-                 :key="idx"
-                 :class="['multi_question_answer', { checked: isChecked(option) }]">
-                <svg v-if="multipleChoice"
-                     class="circle-svg"
-                     :class="{ selected: isChecked(option) }"
-                     xmlns="http://www.w3.org/2000/svg"
-                     viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="45" class="circle-background" />
-                    <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" class="circle-text">{{ String.fromCharCode(97 + idx).toUpperCase() }}</text>
-                </svg>
-                <input v-else
-                       type="radio"
-                       :value="option"
-                       v-model="localAnswer"
-                       @change="updateAnswer" />
-                <p>{{ option }}</p>
-            </div>
-            <svg v-if="submitted" :class="{'correct': isCorrect(option), 'wrong': !isCorrect(option)}">
-                <!-- SVG content here, e.g., a checkmark or a cross -->
+    <div class="input-container">
+        <div v-for="(option, idx) in options"
+             :key="idx" :class="['multi-option', { checked: isChecked(option) }]"
+             @click="selectOption(option)">
+            <svg 
+                 class="circle-svg"
+                 :class="{ selected: isChecked(option) }"
+                 xmlns="http://www.w3.org/2000/svg"
+                 viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" class="circle-background" />
+                <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" class="circle-text">{{ String.fromCharCode(97 + idx).toUpperCase() }}</text>
             </svg>
-        </div>
-
-        <!-- Subquestions -->
-        <div v-if="type === 'section'" class="subquestions_container">
-            <div v-for="(sub, subIndex) in subQuestions" :key="subIndex">
-                <BaseQuestion :index="index + '.' + (subIndex + 1)"
-                              :question="sub.question"
-                              :type="sub.type"
-                              :options="sub.options"
-                              :multipleChoice="sub.multipleChoice"
-                              v-model="localSubAnswers[subIndex]"
-                              :totalQuestions="totalQuestions"
-                              :isReadOnly="isReadOnly" />
-            </div>
-        </div>
-        <div v-if="isReadOnly && (type === 'multiple' || type === 'text')" class="answer-display">
-            <p class="answer">{{ localAnswer }}</p>
-            <svg v-if="submitted" :class="{'correct': isCorrect(localAnswer), 'wrong': !isCorrect(localAnswer)}">
-                <!-- Correct/Incorrect Icon SVG -->
-                <circle v-if="isCorrect(localAnswer)" cx="50" cy="50" r="45" class="checkmark" />
-                <circle v-if="!isCorrect(localAnswer)" cx="50" cy="50" r="45" class="cross" />
-            </svg>
+            <p>{{ option }}</p>
         </div>
     </div>
 </template>
 
 <script>
     import { ref, watch } from 'vue';
-
     export default {
-        name: 'BaseQuestion',
+        name:'MultipleChoiceQuestion',
         props: {
-            modelValue: {
-                type: [String, Array],
-                required: false,
-            },
-            type: {
-                type: String,
-                required: true,
-            },
-            index: {
-                type: [Number, String],
-                required: true,
-            },
-            totalQuestions: {
-                type: Number,
-                required: true,
-            },
-            question: {
-                type: String,
-                required: true,
-            },
-            options: {
-                type: Array,
-                required: false,
-            },
-            subQuestions: {
-                type: Array,
-                required: false,
-            },
-            multipleChoice: {
-                type: Boolean,
-                required: false,
-                default: false,
-            },
-            placeholder: {
-                type: String,
-                required: false,
-            },
-            isReadOnly: {
-                type: Boolean,
-                default: false,
-            },
-            submitted: {
-                type: Boolean,
-                default: false,
-            },
-            correctAnswer: {
-                type: [String, Array],
-                required: false,
-            }
-        }, 
+            modelValue: { type: [String, Array], required: false },
+            options: { type: Array, required: true },
+            multipleChoice: { type: Boolean, required: false, default: false },
+        },
         emits: ['update:modelValue'],
         setup(props, { emit }) {
             const localAnswer = ref(props.modelValue || (props.multipleChoice ? [] : ''));
-            const localSubAnswers = ref(props.subQuestions?.map(() => '') || []);
-
-            watch(localAnswer, (newVal) => {
-                emit('update:modelValue', newVal);
-            });
-            watch(localSubAnswers, (newSubAnswers) => {
-                emit('update:modelValue', newSubAnswers);
-            });
 
             const updateAnswer = () => {
                 emit('update:modelValue', localAnswer.value);
             };
 
             const isChecked = (option) => {
-                if (props.multipleChoice) {
-                    return localAnswer.value.includes(option);
-                }
-                return localAnswer.value === option;
+                return props.multipleChoice ? localAnswer.value.includes(option) : localAnswer.value === option;
             };
 
             const selectOption = (option) => {
                 if (props.multipleChoice) {
-                    if (localAnswer.value.includes(option)) {
-                        localAnswer.value = localAnswer.value.filter((item) => item !== option);
+                    const idx = localAnswer.value.indexOf(option);
+                    if (idx > -1) {
+                        localAnswer.value.splice(idx, 1);
                     } else {
                         localAnswer.value.push(option);
                     }
                 } else {
                     localAnswer.value = option;
                 }
+                updateAnswer();
             };
-            return {
-                localAnswer,
-                localSubAnswers,
-                updateAnswer,
-                isChecked,
-                selectOption
-            };
+
+            return { localAnswer, isChecked, selectOption, updateAnswer };
         },
     };
 </script>
@@ -167,24 +59,12 @@
 <style lang="scss" scoped>
     @import '@/utilities/css/vars/vars.scss';
 
-    .question_header {
-        display: flex;
-        gap: 10px;
-        p{
-            margin:0;
-        }
-    }
-
-    .question_container {
-        margin-bottom: 20px;
-    }
-
-    .input_container {
+    .input-container {
         width: 100%;
         margin-top: 10px;
     }
 
-    .multi_question_answer {
+    .multi-option {
         display: flex;
         flex-wrap: wrap;
         justify-content: flex-start;
@@ -202,12 +82,8 @@
         }
     }
 
-    .label {
-        font-family: $FONT_BOLD;
-        font-size: large;
-    }
 
-    .question_field {
+    .question-field {
         width: 97%;
         border: $BORDER;
         border-radius: 6px;
@@ -219,17 +95,6 @@
         &:focus-visible {
             box-shadow: 0 0 0 2px #fff, 0 0 0 4px #0067f4;
         }
-    }
-
-    .subquestions_container {
-        margin-top: 20px;
-        padding-left: 20px;
-        border-left: 2px solid $LIGHT_GRAY;
-    }
-
-    input[type='checkbox']:checked + label,
-    input[type='radio']:checked + label {
-        font-weight: bold;
     }
     .circle-svg {
         width: 30px;

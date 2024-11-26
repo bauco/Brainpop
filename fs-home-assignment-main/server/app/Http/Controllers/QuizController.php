@@ -19,34 +19,29 @@ class QuizController extends Controller
 
     $questions = [
     [
-        'question' => 'What is 2 + 2?',
+        'text' => 'What is 2 + 2?',
         'type' => 'text',
         'options' => [],
-        'multipleChoice' => false
     ],
     [
-        'question' => 'What is the capital of France?',
+        'text' => 'What is the capital of France?',
         'type' => 'text',
         'options' => [],
-        'multipleChoice' => false
     ],
     [
-        'question' => 'Which of the following are programming languages?',
+        'text' => 'Which of the following are programming languages?',
         'type' => 'multiple',
         'options' => ['JavaScript', 'HTML', 'CSS', 'Python', 'Excel'],
-        'multipleChoice' => true
     ],
     [
-        'question' => 'Who wrote "Hamlet"?',
+        'text' => 'Who wrote "Hamlet"?',
         'type' => 'textarea',
         'options' => [],
-        'multipleChoice' => false
     ],
     [
-        'question' => 'What is the tallest mountain in the world?',
+        'text' => 'What is the tallest mountain in the world?',
         'type' => 'text',
         'options' => [],
-        'multipleChoice' => false
     ]
 ];
         return response()->json([
@@ -57,46 +52,46 @@ class QuizController extends Controller
 
     public function submit(ValidateRequest $request)
     {
-        error_log( "dsf");
+        error_log("124");
+        $validated = $request->validated();
+        $results = $this->checkQuestions( $request->input('answers'),$request->input('questions'));
+        $score = count(array_filter($results, fn($result) => $result));
 
-        $submittedQuestions = $request->input('answers');
-        $this->checkQuestions($submittedQuestions);
-
-        $results = [];
         return response()->json([
             'message' => 'Quiz submitted successfully',
+            'score' => $score,
             'results' => $results,
         ]);
     }
-    private function checkQuestions($submittedQuestions){
-
-        foreach ($submittedQuestions as $submittedQuestion) {
-            if(is_array($submittedQuestion)){
-                $this->checkQuestions($submittedQuestion);
+    private function checkQuestions($answers, $questions)
+    {
+        $results = [];
+        foreach ($questions as $index => $question) {
+            error_log($index);
+            if(is_array($answers[$index])){
+                $this->checkQuestions($question,$answers[$index]);
             }else{
-                error_log( $submittedQuestion);
-                $matchedQuestion = Quiz::where('text', $submittedQuestion['question'])
-                    ->where('type', $submittedQuestion['type'])
+                $matchedQuestion = Question::where('text', $question['text'])
+                    ->where('type', $question['type'])
                     ->first();
-
+                error_log( $matchedQuestion);
                 if (!$matchedQuestion) {
                     return response()->json([
                         'error' => 'Invalid question submitted.',
-                        'submittedQuestion' => $submittedQuestion,
+                        'question' => $question,
                     ], 422);
                 }
-                $isCorrect = $this->validateAnswer($submittedQuestion, $matchedQuestion);
+                error_log( $answers[$index]);
+                $isCorrect = $this->validateAnswer($answers[$index], $matchedQuestion);
+                error_log(  $isCorrect);
+                array_push($results,  $isCorrect);
+
             }
         }
+        return $results;
     }
     private function validateAnswer($submitted, $matched)
     {
-        if ($matched->type === 'text') {
-            return strtolower(trim($submitted['answer'])) === strtolower(trim($matched->correct_answer));
-        } elseif ($matched->type === 'multiple') {
-            return empty(array_diff($submitted['answer'], $matched->options));
-        }
-
-        return false;
+       return strtolower(trim($submitted)) === strtolower(trim($matched->correct_answer));
     }
 }

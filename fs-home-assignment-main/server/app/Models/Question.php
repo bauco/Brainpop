@@ -9,11 +9,11 @@ class Question extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'quiz_id',
-        'question', 
         'type', 
+        'text',
         'options',
         'multipleChoice',
+        'correct_answer'
     ];
 
     public function quiz()

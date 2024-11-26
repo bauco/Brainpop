@@ -2,7 +2,7 @@
     <div class="input-container">
         <input v-model="localAnswer"
                :placeholder="placeholder || 'Your answer here'"
-               type="text"
+               type="textarea"
                class="question-field"
                @input="updateAnswer" />
     </div>
@@ -12,7 +12,7 @@
     import { ref, watch } from 'vue';
 
     export default {
-        name: 'TextQuestion',
+        name: 'TextArea',
         props: {
             modelValue: { type: String, required: false },
             placeholder: { type: String, required: false }
