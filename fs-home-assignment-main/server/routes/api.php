@@ -19,6 +19,5 @@ use App\Http\Controllers\Auth\RegisterController;
 
 Route::post('signup', [RegisterController::class, 'signup']);
 Route::post('login', [TokenController::class, 'login']);
-Route::middleware(['auth'])->group(function () {
-    Route::post('quiz/validate', [TokenController::class, 'login']);
-});
+Route::get('questions', [QuizController::class, 'questions']);
+Route::post('validate', [QuizController::class, 'submit']);

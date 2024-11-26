@@ -39,6 +39,12 @@
             Navigator,
             QuizNavigator
         },
+        props: {
+            questions: {
+                type: Array,
+                required: true
+            }
+        },
         methods: {
             nextQuestion() {
                 if (this.currentQuestionIndex < this.questions.length - 1) {
@@ -62,38 +68,6 @@
                 currentQuestionIndex: 0,
                 allowBack: true,
                 name: 'Accelration',
-                questions: [
-                    {
-                        question: 'What is 2 + 2?',
-                        type: 'text',
-                        options: [],
-                        multipleChoice: false
-                    },
-                    {
-                        question: 'What is the capital of France?',
-                        type: 'text',
-                        options: [],
-                        multipleChoice: false
-                    },
-                    {
-                        question: 'Which of the following are programming languages?',
-                        type: 'multiple',
-                        options: ['JavaScript', 'HTML', 'CSS', 'Python', 'Excel'],
-                        multipleChoice: true
-                    },
-                    {
-                        question: 'Who wrote "Hamlet"?',
-                        type: 'textarea',
-                        options: [],
-                        multipleChoice: false
-                    },
-                    {
-                        question: 'What is the tallest mountain in the world?',
-                        type: 'text',
-                        options: [],
-                        multipleChoice: false
-                    },
-                ],
                 answers: ['', '', [], '', ''], // Store answers (array for multiple choices)
                 currentQuestionIndex: 0,
             }

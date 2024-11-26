@@ -45,7 +45,7 @@
                     const store = useUserStore();
                     store.login(response.data.access_token);
                     axios.interceptors.request.use(function (config) {
-                        config.headers.Authorization = response.data.access_token;
+                        config.headers.Authorization = 'Bearer ' + response.data.access_token;
                         return config;
                     });
                     this.$emit('submit', credentials)

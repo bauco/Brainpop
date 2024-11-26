@@ -11,19 +11,14 @@ class ValidateRequest extends FormRequest
 {
     public function authorize()
     {
-        return auth()->check();
+        return true;
     }
 
     public function rules()
     {
         return [
+            'answers' => 'required|array',
             'questions' => 'required|array',
-            'questions.*.question' => 'required|string',
-            'questions.*.type' => 'required|in:text,multiple,textarea',
-            'questions.*.options' => 'nullable|array',
-            'questions.*.multipleChoice' => 'required|boolean',
-            'questions.*.answer' => 'required', 
-            'questions.*.subQuestions' => 'nullable|array', 
         ];
     }
 
@@ -43,12 +38,5 @@ class ValidateRequest extends FormRequest
             'message' => 'Validation failed',
             'errors' => $errors
         ], 422));
-    }
-    protected function failedAuthorization()
-    {
-        throw new HttpResponseException(response()->json([
-            'message' => 'Authorization failed',
-            'errors' => ['auth' => ['You are not authorized to perform this action.']],
-        ], 403));
     }
 }
