@@ -5,21 +5,18 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Validation\Rule;
+use Illuminate\Auth\Access\AuthorizationException;
 
-class SignUpRequest extends FormRequest
+class GetQuestionsRequest extends FormRequest
 {
     public function authorize()
     {
-        return true;
+        return auth()->check();
     }
 
     public function rules()
     {
         return [
-            'name' => 'required|string',
-            'email' => ['required|string|email',, Rule::unique('users', 'email')]
-            'password' => 'required|string',
         ];
     }
 
@@ -33,14 +30,18 @@ class SignUpRequest extends FormRequest
      */
     protected function failedValidation(Validator $validator)
     {
-        if ($errors->has('email')) {
-            $errors->add('email', 'This email is already registered. Please choose a different one.');
-        }
         $errors = $validator->errors();
 
         throw new HttpResponseException(response()->json([
             'message' => 'Validation failed',
             'errors' => $errors
         ], 422));
+    }
+    protected function failedAuthorization()
+    {
+        throw new HttpResponseException(response()->json([
+            'message' => 'Authorization failed',
+            'errors' => ['auth' => ['You are not authorized to perform this action.']],
+        ], 403));
     }
 }

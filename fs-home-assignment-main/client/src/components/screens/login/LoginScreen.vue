@@ -5,8 +5,7 @@
         <br />
         <BaseButton @click="signup" type="submit" :theme="'SECONDARY'">Sign Up</BaseButton>
         <!-- Error message -->
-        <p v-if="errorMessage" class="error_message">{{ errorMessage }}</p>
-    </main>
+     </main>
 </template>
 
 <script>
@@ -15,7 +14,6 @@
     import Logo from '@/components/base/logo/Logo.vue'
     import LoginForm from '@/components/compositions/forms/login/LoginForm.vue'
     import axios from 'axios'
-
 
     export default {
 
@@ -38,7 +36,6 @@
             async submit(credentials) {
                 const apiUrl = import.meta.env.VITE_API_URL;
                 axios.defaults.baseURL = apiUrl;
-
                 console.log('Login:', apiUrl + '/api/login');
                 try {
                     const response = await axios.post('/api/login', credentials)
@@ -48,19 +45,18 @@
                     console.log('Login successful:', data);
                     const store = useUserStore();
                     store.setUser(data);
+                    store.login(data, () => {
+                        axios.defaults.headers.Authorization = `Bearer ${data.token}`;
+                    });
                     this.$emit('submit', credentials)
                     this.$router.push('/feature/quiz');
 
                 } catch (error) {
                     if (error.response) {
-                        console.error("Error response data:", error.response.data);
-                        console.error("Error response status:", error.response.status);
                         this.errorMessage = error.response.data.message || 'An error occurred while logging in.';
                     } else if (error.request) {
-                        console.error("No response received:", error.request);
                         this.errorMessage = 'No response from the server. Please try again later.';
                     } else {
-                        console.error("Error setting up request:", error.message);
                         this.errorMessage = error.message;
                     }
                 }
