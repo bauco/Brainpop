@@ -1,5 +1,5 @@
 <?php
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\ActivityController;
@@ -19,5 +19,10 @@ use App\Http\Controllers\Auth\RegisterController;
 
 Route::post('signup', [RegisterController::class, 'signup']);
 Route::post('login', [TokenController::class, 'login']);
-Route::get('questions', [QuizController::class, 'questions']);
-Route::post('validate', [QuizController::class, 'submit']);
+
+if (Auth::check()) {
+    Route::get('questions', [QuizController::class, 'questions']);
+    Route::post('validate', [QuizController::class, 'submit']);
+}
+Route::middleware('auth:sanctum')->get('questions', [QuizController::class, 'questions']);
+Route::middleware('auth:sanctum')->post('validate', [QuizController::class, 'submit']);

@@ -39,30 +39,23 @@ export default {
         this.$router.push('login');
     },
     async submit(credentials) {
-        const apiUrl = import.meta.env.VITE_API_URL;
-        axios.defaults.baseURL = apiUrl;
+
         try {
-            const response = await axios.post('/api/signup', credentials);
-            if (!response.data || response.data.message !== "User signup successfully") {
-                this.errorMessage = 'Signup failed';
-            } else {
-                axios.interceptors.request.use(function (config) {
-                    config.headers.Authorization = response.data.access_token;
-                    return config;
-                });
-                const store = useUserStore();
-                store.login(response.data.access_token);
+            const store = useUserStore();
+            store.signup(credentials);
+            if (store.isLoggedIn) {
+                this.$emit('submit', credentials)
                 this.$router.push('/feature/quiz');
             }
-        } catch (error) {
+        } catch(error) {
             if (error.response) {
                 this.errorMessage = error.response.data.message || 'An error occurred while logging in.';
-             } else if (error.request) {
-                 this.errorMessage = 'No response from the server. Please try again later.';
-             } else {
-                 this.errorMessage = error.message;
-             }
-         }
+            } else if (error.request) {
+                this.errorMessage = 'No response from the server. Please try again later.';
+            } else {
+                this.errorMessage = error.message;
+            }
+        }
     }
     }
 }

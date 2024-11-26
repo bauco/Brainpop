@@ -3,7 +3,6 @@
         <QuizStartScreen v-if="quizState === QUIZ_STATES.START" :name="data.name" :questionsLength="data.questions.length" @start="start"></QuizStartScreen>
         <QuizQuestionsScreen v-if="quizState === QUIZ_STATES.QUESTIONS"  :questions="questions" @submit="submit"></QuizQuestionsScreen>
         <ResultsScreen v-if="quizState === QUIZ_STATES.RESULT" :questions="questions" :answers="answers" :results="results"></ResultsScreen>
-
     </div>
 <div v-else>Loading...</div>
 </template>
@@ -13,6 +12,7 @@ import QuizStartScreen from './startScreen/QuizStartScreen.vue'
 import ResultsScreen from './resultsScreen/ResultsScreen.vue'
 import QuizQuestionsScreen from './questionsScreen/QuizQuestionsScreen.vue'
 import axios from 'axios';
+import { useUserStore } from '@/stores/user'
 
 const QUIZ_STATES = {
   START: 'start',
@@ -45,9 +45,9 @@ export default {
   methods: {
       async start() {
           try {
-              const apiUrl = import.meta.env.VITE_API_URL;
-              axios.defaults.baseURL = apiUrl;
-              const response = await axios.get('/api/questions');
+              const store = useUserStore();
+              
+              const response = await store.getQuestions();
               this.questions = response.data.questions;  
               this.quizState = QUIZ_STATES.QUESTIONS;
           } catch (error) {

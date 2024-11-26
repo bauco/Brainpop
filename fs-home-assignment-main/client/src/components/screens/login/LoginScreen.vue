@@ -36,21 +36,14 @@
                 this.$router.push('signup');
             },
             async submit(credentials) {
-                const apiUrl = import.meta.env.VITE_API_URL;
-                axios.defaults.baseURL = apiUrl;
 
-                console.log('Login:', apiUrl + '/api/login');
                 try {
-                    const response = await axios.post('/api/login', credentials)
                     const store = useUserStore();
-                    store.login(response.data.access_token);
-                    axios.interceptors.request.use(function (config) {
-                        config.headers.Authorization = 'Bearer ' + response.data.access_token;
-                        return config;
-                    });
-                    this.$emit('submit', credentials)
-                    this.$router.push('/feature/quiz');
-
+                    await store.login(credentials);
+                    if (store.isLoggedIn) {
+                        this.$emit('submit', credentials)
+                        this.$router.push('/feature/quiz');
+                    }
                 } catch (error) {
                     if (error.response) {
                         console.error("Error response data:", error.response.data);

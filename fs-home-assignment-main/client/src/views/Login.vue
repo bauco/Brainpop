@@ -15,9 +15,8 @@ export default {
     LoginScreen
   },
   methods: {
-    submit(credentials) {
+    async submit(credentials) {
       console.log('credentials', credentials)
-      const store = useUserStore()
     }
   }
 }

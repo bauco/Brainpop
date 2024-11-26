@@ -1,5 +1,5 @@
 <?php
-
+use App\Models\User;
 return [
 
     /*
@@ -96,6 +96,8 @@ return [
 
     'passwords' => [
         'users' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\User::class,
             'provider' => 'users',
             'table' => 'password_reset_tokens',
             'expire' => 60,
